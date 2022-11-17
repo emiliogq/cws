@@ -5,7 +5,7 @@ import operator
 vehCap = 100.0 # update vehicle capacity for each instance
 instanceName = 'A-n80-k10' # name of the instance
 # txt file with the VRP instance data (nodeID, x, y, demand)
-fileName = 'data/instanceName' + '_input_nodes.txt'
+fileName = 'data/' + instanceName + '_input_nodes.txt'
 
 with open(fileName) as instance:
     i = 0
