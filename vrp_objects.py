@@ -1,5 +1,5 @@
 class Node:
-    def __init_(self, ID, x, y, demand):
+    def __init__(self, ID, x, y, demand):
         self.Id = ID # node identifier (depot ID = 0)
         self.x = x # Euclidean x-coordinate
         self.y = y # Euclidean y-coordinate
@@ -10,7 +10,7 @@ class Node:
         self.to_depot_edge = None # edge (arc) from this node to depot
 
 class Edge:
-    def __init_(self, origin, end):
+    def __init__(self, origin, end):
         self.origin = origin # origin node of the edge (arc)
         self.end = end # end node of the edge (arc)
         self.cost = 0.0 # edge cost
