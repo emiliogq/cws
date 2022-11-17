@@ -4,10 +4,10 @@ class Node:
         self.x = x # Euclidean x-coordinate
         self.y = y # Euclidean y-coordinate
         self.demand = demand # demand (is 0 for depot and positive for others)
-        self.inRoute = None # route to which node belongs
-        self.isInterior = False # an interior node is not connected to depot
-        self.dnEdge = None # edge (arc) from depot to this node
-        self.ndEdge = None # edge (arc) from this node to depot
+        self.route = None # route to which node belongs
+        self.is_connected_to_depot = False # an interior node is not connected to depot
+        self.from_depot_edge = None # edge (arc) from depot to this node
+        self.to_depot_edge = None # edge (arc) from this node to depot
 
 class Edge:
     def __init_(self, origin, end):
@@ -15,7 +15,7 @@ class Edge:
         self.end = end # end node of the edge (arc)
         self.cost = 0.0 # edge cost
         self.savings = 0.0 # edge savings (Clarke & Wright)
-        self.invEdge = None # inverse edge (arc)
+        self.inverse_edge = None # inverse edge (arc)
 
 class Route:
     def __init__(self):
