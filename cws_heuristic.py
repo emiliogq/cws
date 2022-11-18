@@ -18,7 +18,8 @@ with open(fileName) as instance:
         i += 1
 
 depot = nodes[0] # node 0 is depot
-for node in nodes[1:]: # exclude depot
+destinations = nodes[1:]
+for node in destinations: # exclude depot
     dnEdge = Edge(depot, node) # creates (depot, node) edge
     ndEdge = Edge(node, depot)
     dnEdge.inverse_edge = ndEdge # sets the inverse edge
@@ -53,5 +54,56 @@ for i in range(1, len(nodes) - 1): # excludes depot
 savingsList.sort(key = operator.attrgetter("savings"), reverse = True)
 # TODO creo que el ej 2 iria aqui haciendo orden random con una exponencial o triangular
 
-sol = Solution()
-#### ...
+sol = Solution(destinations)
+
+def are_routes_mergeable(node_a : Node, node_b : Node, route_a : Route, route_b : Route):
+    is_different_route = route_a != route_b
+    are_nodes_exterior = node_a.is_connected_to_depot and node_b.is_connected_to_depot
+    is_total_demand_covered = vehCap >= route_a.demand + route_b.demand
+    return is_different_route and are_nodes_exterior and is_total_demand_covered
+
+def get_depot_edge(route : Route, node : Node):
+    origin = route.edges[0].origin
+    end = route.edges[0].end
+    return route.edges[0] if ( (origin == node and end == depot) or
+        ( origin == depot and end == node)) else route.edges[-1]
+
+def iterative():
+    while (len(savingsList) > 0):
+        possible_common_edge:Edge = savingsList.pop(0)
+        origin:Node = possible_common_edge.origin
+        end:Node = possible_common_edge.end
+        route_a:Route = origin.route
+        route_b:Route = end.route
+        if ( are_routes_mergeable(origin, end, route_a, route_b) ):
+            merge(route_a, origin, route_b, end, possible_common_edge)
+
+def remove_depot_edge_from_route(route : Route, node : Node):
+    depot_edge = get_depot_edge(route, node)
+    route.remove_edge(depot_edge)
+    # If there are multiple edges in a route, 
+    # then origin will be interior, i.e., 
+    # not directly connected to the depot
+    if len(route.edges) > 1:
+        node.is_connected_to_depot = False
+    
+def merge(route_a : Route, node_a: Node, route_b : Route, node_b: Node, possible_common_edge : Edge):
+    remove_depot_edge_from_route(route_a, node_a)
+    remove_depot_edge_from_route(route_b, node_b)
+    if route_a.edges[0].origin != depot :
+        route_a.reverse()
+    if route_b.edges[0].origin == depot :
+        route_b.reverse()
+    route_a.add_edge(possible_common_edge)
+    route_a.demand += node_b.demand
+    node_b.route = route_a
+    for edge in route_b.edges:
+        route_a.edges.append(edge)
+        route_a.cost += edge.cost
+        route_a.demand += edge.end.demand
+        edge.end.route = route_a
+    sol.cost -= possible_common_edge.savings
+    sol.remove_route(route_b)
+
+iterative()
+print(sol)
