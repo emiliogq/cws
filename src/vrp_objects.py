@@ -54,7 +54,7 @@ class Route:
 
 class Solution:
     last_ID = -1 #counts the number of solutions, starts with 0
-    def __init__(self, destinations : list[Node]):
+    def __init__(self, destinations : list):
         Solution.last_ID += 1
         self.ID = Solution.last_ID
         self.routes = [] # routes in this solution
