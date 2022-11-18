@@ -5,21 +5,25 @@ import operator
 vehCap = 100.0 # update vehicle capacity for each instance
 instanceName = 'A-n80-k10' # name of the instance
 # txt file with the VRP instance data (nodeID, x, y, demand)
-fileName = 'data/' + instanceName + '_input_nodes.txt'
+filename = 'data/' + instanceName + '_input_nodes.txt'
 
-with open(fileName) as instance:
-    i = 0
-    nodes = []
-    for line in instance:
-        # array data with node data: x, y demand
-        data = [float(x) for x in line.split()]
-        aNode = Node(i, data[0], data[1], data[2])
-        nodes.append(aNode)
-        i += 1
+def read_nodes(filename: str):
+    with open(filename) as instance:
+        i = 0
+        nodes = []
+        for line in instance:
+            # array data with node data: x, y demand
+            data = [float(x) for x in line.split()]
+            aNode = Node(i, data[0], data[1], data[2])
+            nodes.append(aNode)
+            i += 1
+    depot = nodes[0] # node 0 is depot
+    destinations = nodes[1:]
+    return depot, destinations
 
-depot = nodes[0] # node 0 is depot
-destinations = nodes[1:]
-for node in destinations: # exclude depot
+depot, destinations = read_nodes(filename)
+
+for node in destinations:
     dnEdge = Edge(depot, node) # creates (depot, node) edge
     ndEdge = Edge(node, depot)
     dnEdge.inverse_edge = ndEdge # sets the inverse edge
@@ -32,19 +36,19 @@ for node in destinations: # exclude depot
     node.to_depot_edge = ndEdge
 
 savingsList = []
-for i in range(1, len(nodes) - 1): # excludes depot
-    iNode = nodes[i]
-    for j in range(i + 1, len(nodes)):
-        jNode = nodes[j]
-        ijEdge = Edge(iNode, jNode) # creates the (i, j) edge
-        jiEdge = Edge(jNode, iNode)
+for i in range(len(destinations)):
+    destination_a = destinations[i]
+    for j in range(i+1, len(destinations)):
+        destination_b = destinations[j]
+        ijEdge = Edge(destination_a, destination_b) # creates the (i, j) edge
+        jiEdge = Edge(destination_b, destination_a)
         ijEdge.inverse_edge = jiEdge # sets the inverse edge
         jiEdge.inverse_edge = ijEdge
         # compute the Euclidean distance as cost
-        ijEdge.cost = math.sqrt((jNode.x - iNode.x)**2 + (jNode.y - iNode.y)**2)
+        ijEdge.cost = math.sqrt((destination_b.x - destination_a.x)**2 + (destination_b.y - destination_a.y)**2)
         jiEdge.cost = ijEdge.cost # assume symmectir costs
         # compute savins as proposed by Clark & Wright
-        ijEdge.savings = iNode.to_depot_edge.cost + jNode.from_depot_edge.cost - ijEdge.cost
+        ijEdge.savings = destination_a.to_depot_edge.cost + destination_b.from_depot_edge.cost - ijEdge.cost
         jiEdge.savings = ijEdge.savings
         # save one edge in the savings list
         savingsList.append(ijEdge)
