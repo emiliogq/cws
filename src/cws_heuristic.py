@@ -1,4 +1,4 @@
-from vrp_objects import Node, Edge, Route, Solution
+from src.vrp_objects import Node, Edge, Route, Solution
 import math
 import operator
 
