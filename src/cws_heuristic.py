@@ -1,11 +1,11 @@
 from vrp_objects import Node, Edge, Route, Solution
-import math
+import math, random
 import operator
 
 vehCap = 100.0 # update vehicle capacity for each instance
 instanceName = 'A-n80-k10' # name of the instance
 # txt file with the VRP instance data (nodeID, x, y, demand)
-filename = 'data/' + instanceName + '_input_nodes.txt'
+filename = '../data/' + instanceName + '_input_nodes.txt'
 
 def read_nodes(filename: str):
     with open(filename) as instance:
@@ -35,6 +35,7 @@ for node in destinations:
     node.from_depot_edge = dnEdge
     node.to_depot_edge = ndEdge
 
+original_savingsList = []
 savingsList = []
 for i in range(len(destinations)):
     destination_a = destinations[i]
@@ -51,12 +52,25 @@ for i in range(len(destinations)):
         ijEdge.savings = destination_a.to_depot_edge.cost + destination_b.from_depot_edge.cost - ijEdge.cost
         jiEdge.savings = ijEdge.savings
         # save one edge in the savings list
-        savingsList.append(ijEdge)
+        original_savingsList.append(ijEdge)
 
 
 
-savingsList.sort(key = operator.attrgetter("savings"), reverse = True)
+original_savingsList.sort(key = operator.attrgetter("savings"), reverse = True)
+
 # TODO creo que el ej 2 iria aqui haciendo orden random con una exponencial o triangular
+
+def multi_start_BR(beta = 0.30):
+    savings_copy = original_savingsList.copy()
+    end_list = []
+    for _ in range(len(savings_copy)):
+        index = int(math.log(random.random()) / math.log(1 - beta))
+        index = index % len(savings_copy)
+        end_list.append(savings_copy[index])
+        savings_copy.pop(index)
+    return end_list
+
+savingsList = multi_start_BR()
 
 sol = Solution(destinations)
 
