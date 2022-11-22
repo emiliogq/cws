@@ -117,7 +117,7 @@ class CWS :
 def multi_start_biased_randomized_algorithm(savings: list, beta = 0.30):
     savings_copy = savings.copy()
     end_list = []
-    for _ in range(len(savings_copy)):
+    while(len(savings_copy) > 0):
         index = int(math.log(random.random()) / math.log(1 - beta))
         index = index % len(savings_copy)
         end_list.append(savings_copy[index])
