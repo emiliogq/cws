@@ -5,14 +5,13 @@ import operator
 
 class CWS :
 
-    def __init__(self, filename, savings = None, vehicle_capacity = 100) -> None:
+    def __init__(self, filename, vehicle_capacity = 100) -> None:
         self.vehicle_capacity = vehicle_capacity
         self.depot, self.destinations = self.read_nodes(filename)
         self.create_destination_edges()
         self.solution = Solution(self.destinations)
-        if (savings == None):
-            self.savings = []
-            self.init_savings()
+        self.savings = []
+        self.init_savings()
     
     def read_nodes(self, filename: str):
         with open(filename) as instance:
@@ -46,6 +45,16 @@ class CWS :
                 # save one edge in the savings list
                 self.savings.append(ijEdge)
         self.savings.sort(key = operator.attrgetter("savings"), reverse = True)
+
+    def savings_from_geometric(self, beta = 0.3):
+        savings_copy = self.savings.copy()
+        end_list = []
+        while(len(savings_copy) > 0):
+            index = int(math.log(random.random()) / math.log(1 - beta))
+            index = index % len(savings_copy)
+            end_list.append(savings_copy[index])
+            savings_copy.pop(index)
+        self.savings = end_list
 
     def create_destination_edges(self):
         for node in self.destinations:
@@ -113,13 +122,4 @@ class CWS :
                 self.merge(route_a, origin, route_b, end, possible_common_edge)
         return self.solution
 
-
-def multi_start_biased_randomized_algorithm(savings: list, beta = 0.30):
-    savings_copy = savings.copy()
-    end_list = []
-    while(len(savings_copy) > 0):
-        index = int(math.log(random.random()) / math.log(1 - beta))
-        index = index % len(savings_copy)
-        end_list.append(savings_copy[index])
-        savings_copy.pop(index)
-    return end_list
+    
