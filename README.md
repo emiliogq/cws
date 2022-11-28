@@ -1,4 +1,4 @@
-# Vehicle Routing Problem
+# Vehicle Routing Problem using Clarke and Wright Savings (CWS) heuristic
 
 This repo is a Python implementation to solve the [VRP](https://en.wikipedia.org/wiki/Vehicle_routing_problem), using the [CWS heuristic](https://neo.lcc.uma.es/vrp/solution-methods/heuristics/savings-algorithms/)
 
