@@ -1,4 +1,8 @@
-from vrp_objects import Node, Edge, Route, Solution
+from vrp.nodes.node import Node
+from vrp.edges.edge import Edge 
+from vrp.routes.route import Route
+from vrp.solutions.solution import Solution
+
 import math, random
 import operator
 

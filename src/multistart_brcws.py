@@ -1,4 +1,4 @@
-from cws_heuristic import *
+from cws.cws_heuristic import *
 from operator import attrgetter
 
 def multi_start_biased_randomized_algorithm(filename: str, vehicle_capacity=100, iterations = 10, beta = 0.3) -> Solution:

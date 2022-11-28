@@ -1,6 +1,6 @@
 import sys
 sys.path.insert(0, '../src')
-from cws_heuristic import *
+from cws.cws_heuristic import *
 from unittest import mock
 
 def test_cws():
